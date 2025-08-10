@@ -1,9 +1,8 @@
 from flask import Blueprint,render_template, request, redirect
-
-
+from .utils import Text_File_Handler
+from .models import User
 
 main = Blueprint('main', __name__)
-
 
 @main.route('/')
 def home():
