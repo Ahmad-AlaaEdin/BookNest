@@ -1,7 +1,6 @@
 from flask import Blueprint,render_template, request, redirect,session
-from .utils import User_File_Handler
 from .models import User
-from flask_login import login_required
+from flask_login import login_required,current_user
 
 main = Blueprint('main', __name__)
 
@@ -9,7 +8,7 @@ main = Blueprint('main', __name__)
 def home():
     return render_template('home.html')
 
-
+@main.route('/user',methods=["PATCH"])
 
 @main.route('/login')
 def login():
@@ -31,9 +30,6 @@ def dashboard():
 @main.route('/profile')
 @login_required
 def profile():
-    return render_template('profile.html')
-'''
-@main.route("/user",methods=["PUT"])
-@login_required
-def update_user():
-'''    
+    print(current_user.check_password("fdsf"))
+    return render_template('profile.html',user=current_user)
+   
