@@ -1,7 +1,7 @@
 from flask import Blueprint,render_template, request, redirect,session
-from .utils import Text_File_Handler
+from .utils import User_File_Handler
 from .models import User
-from .auth import login_required
+from flask_login import login_required
 
 main = Blueprint('main', __name__)
 

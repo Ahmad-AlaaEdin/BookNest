@@ -1,14 +1,10 @@
 [
     {
         "username": "ahmad",
-        "password": "12345678"
+        "password_hash": "scrypt:32768:8:1$y9EKildEryA7dANL$68109f87cd6a9ba42072e9c8e1926c4359081ca632a2c402bd7a9f01354a022e1d33377f0d91b0d0e24bc0e6d061e1afed62bb815240e1b2cfbbcfff6b4e4bfa"
     },
     {
         "username": "ali",
-        "password": "1234321231"
-    },
-    {
-        "username": "ahmad123",
-        "password": "ahmad123"
+        "password_hash": "scrypt:32768:8:1$DRkCs1oyqasbsO8P$24613c6128dc5ceba4c3b356630aed177a46958d3e407edc236f2223dda819cedc2c56e215f73ba3d02b3d14e9065682925693a8927263fc183f3d5954e63883"
     }
 ]
