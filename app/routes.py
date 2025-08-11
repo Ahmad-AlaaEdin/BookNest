@@ -1,6 +1,7 @@
-from flask import Blueprint,render_template, request, redirect
+from flask import Blueprint,render_template, request, redirect,session
 from .utils import Text_File_Handler
 from .models import User
+from .auth import login_required
 
 main = Blueprint('main', __name__)
 
@@ -25,3 +26,14 @@ def signup():
 @main.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
+
+
+@main.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html')
+'''
+@main.route("/user",methods=["PUT"])
+@login_required
+def update_user():
+'''    

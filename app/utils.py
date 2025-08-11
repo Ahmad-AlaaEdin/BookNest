@@ -4,8 +4,7 @@ class Text_File_Handler :
         self.path = path
     def load(self):
         content = []
-        with open(self.path) as file:
-            
+        with open(self.path) as file:   
             content = json.load(file)
         return content
     def save(self,content):
@@ -31,4 +30,12 @@ class Text_File_Handler :
             if(row.get(key) == value):
                 row.update(obj)
         self.save(content)
+    def get(self,condition):
+        key , value = list(condition.items())[0]
+        content = self.load()
         
+        for row in content :
+            
+            if(row.get(key) == value):
+                return row
+        return None
