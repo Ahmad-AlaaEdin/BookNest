@@ -9,7 +9,7 @@ handler = User_File_Handler("app/users.json")
 
 def create_app():
     app = Flask("BookNest", template_folder="app/templates", static_folder="static")
-    app.secret_key=SECRET_KEY
+    app.secret_key = SECRET_KEY
     login_manager = LoginManager()
     login_manager.init_app(app)
 
@@ -17,7 +17,7 @@ def create_app():
     def load_user(user_id):
         user = handler.get(user_id)
         if user:
-            return User(user_id,user["username"], user["password_hash"])
+            return user
         return None
 
     from .routes import main

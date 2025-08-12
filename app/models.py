@@ -15,7 +15,7 @@ class User(UserMixin):
 
     @classmethod
     def create(cls, name, email, password):
-        return cls(str(uuid.uuid4), name, email, generate_password_hash(password))
+        return cls(str(uuid.uuid4()), name, email, generate_password_hash(password))
 
     def to_dict(self):
         return {

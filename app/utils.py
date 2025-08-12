@@ -1,4 +1,5 @@
 import json
+from .models import User
 
 
 class User_File_Handler:
@@ -32,7 +33,7 @@ class User_File_Handler:
         users = self.load()
         for row in users:
             if row.get("id") == user.id:
-                row.update(user)
+                row.update(user.to_dict())
         self.save(users)
 
     def get(self, user_id):
@@ -42,15 +43,18 @@ class User_File_Handler:
         for row in content:
 
             if row.get("id") == user_id:
-                return row
+                return self.from_dic(row)
         return None
 
-    def get_by_username(self, username):
+    def get_by_email(self, email):
 
         content = self.load()
 
         for row in content:
 
-            if row.get("username") == username:
-                return row
+            if row.get("email") == email:
+                return self.from_dic(row)
         return None
+
+    def from_dic(self, dic):
+        return User(dic["id"], dic["name"], dic["email"], dic["password_hash"])

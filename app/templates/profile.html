@@ -1,5 +1,12 @@
 {% extends 'base.html' %} {% block content %}
 <h1>Profile</h1>
 {% if user %}
-<p>Welcome, {{ user.username }}!</p>
-{% endif %} {%endblock%}
+<p>Welcome, {{ user.name }}!</p>
+
+{% with messages = get_flashed_messages() %} {% if messages %}
+<ul>
+  {% for message in messages %}
+  <li style="color: red">{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %} {% endwith %} {% endif %} {%endblock%}

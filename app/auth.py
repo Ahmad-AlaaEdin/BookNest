@@ -11,16 +11,17 @@ auth = Blueprint("auth", __name__)
 
 @auth.route("/signup", methods=["POST"])
 def signup():
-    username = request.form.get("username")
+    name = request.form.get("name")
+    email = request.form.get("email")
     password = request.form.get("password")
-    if not username or not password:
+    if not name or not email or not password:
         flash("Both Username and Password Required")
         return redirect("/signup")
-    usr = handler.get_by_username(username)
+    usr = handler.get_by_email(email)
     if usr:
         flash("User Name Already Exist", "error")
         return redirect("/signup")
-    user = User.create(username, password)
+    user = User.create(name, email, password)
     handler.add(user)
     flash("Signup Succed")
     return redirect("/signup")
@@ -29,23 +30,25 @@ def signup():
 @auth.route("/login", methods=["POST"])
 def login():
 
-    username = request.form.get("username")
+    email = request.form.get("email")
     password = request.form.get("password")
-    if not username or not password:
+    if not email or not password:
         flash("Both Username and Password Required")
         return redirect("/login")
 
-    print(username)
-    usr = handler.get_by_username(username)
+    print(email)
+    usr = handler.get_by_email(email)
     if usr:
         print("found")
-        user = User( usr["username"], usr["password_hash"])
-        if user.check_password(password):
-            login_user(user)
+        
+        if usr.check_password(password):
+            login_user(usr)
             flash("logged in succesfully")
             return redirect("/dashboard")
+        flash("Invalid Username or Password ")
+    else:
+        flash("User Not Found")
 
-    flash("Invalid Username or Password ")
     return redirect("/login")
 
 
