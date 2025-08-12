@@ -1,14 +1,15 @@
 from flask import Flask
 from flask_login import LoginManager
 from .utils import User_File_Handler
-from .models import User
+from .models.user import User
 from .config import SECRET_KEY
+from .models.book import Book
 
 handler = User_File_Handler("app/users.json")
 
 
 def create_app():
-    app = Flask("BookNest", template_folder="app/templates", static_folder="static")
+    app = Flask("BookNest", template_folder="app/templates", static_folder="app/static")
     app.secret_key = SECRET_KEY
     login_manager = LoginManager()
     login_manager.init_app(app)

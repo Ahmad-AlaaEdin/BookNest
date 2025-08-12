@@ -1,5 +1,5 @@
 from flask import Blueprint, request, flash, redirect
-from .models import User
+from .models.user import User
 
 from .utils import User_File_Handler
 

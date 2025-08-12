@@ -1,5 +1,5 @@
 import sqlite3
-from config import DB_NAME
+from .config import DB_NAME
 
 
 def get_db_connection():
@@ -14,7 +14,7 @@ def init_db():
         """
       CREATE TABLE IF NOT EXISTS books (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT NOT NULL,
+    user_id TEXT NOT NULL,
     title TEXT NOT NULL,
     status TEXT CHECK(status IN ('to_read', 'reading', 'read')) NOT NULL
 );

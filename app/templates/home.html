@@ -1,4 +1,18 @@
-{% extends 'base.html' %} 
-{% block content %}
-<h1>Welcome to BookNest</h1>
+{% extends 'base.html' %} {% block content %}
+<div class="row align-items-center">
+  <div class="col-md-6 order-2 order-md-1">
+    <h1 class="fw-bold">Track your reading. Build your personal library.</h1>
+    <p>
+      BookNest helps you organize your library, track your reading progress,
+      rate and review books, and export your book list.
+    </p>
+    <a class="btn btn-primary fw-bold" href="/login">Get Started</a>
+  </div>
+  <div class="col-md-6 order-1 order-md-2">
+    <img src="/static/images/hero.png" class="img-fluid" />
+  </div>
+</div>
+<div class="column">
+  <h1 class="fw-bold text-center">Features</h1>
+</div>
 {%endblock%}

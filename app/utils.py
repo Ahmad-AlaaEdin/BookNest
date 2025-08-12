@@ -1,5 +1,5 @@
 import json
-from .models import User
+from .models.user import User
 
 
 class User_File_Handler:
