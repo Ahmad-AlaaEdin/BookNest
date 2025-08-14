@@ -1,18 +1,66 @@
 {% extends 'base.html' %} {% block content %}
-<div class="row align-items-center">
-  <div class="col-md-6 order-2 order-md-1">
-    <h1 class="fw-bold">Track your reading. Build your personal library.</h1>
-    <p>
-      BookNest helps you organize your library, track your reading progress,
-      rate and review books, and export your book list.
-    </p>
-    <a class="btn btn-primary fw-bold" href="/login">Get Started</a>
+
+<main class="container text-center text-md-start">
+  <div class="row align-items-center p-3">
+    <div class="col-md-6 order-2 order-md-1">
+      <h1 class="fw-bold">Track your reading. Build your personal library.</h1>
+      <p>
+        BookNest helps you organize your library, track your reading progress,
+        rate and review books, and export your book list.
+      </p>
+      <a class="btn btn-primary fw-bold" href="/login">Get Started</a>
+    </div>
+    <div class="col-md-6 order-1 order-md-2">
+      <img src="/static/images/hero.png" class="img-fluid" />
+    </div>
   </div>
-  <div class="col-md-6 order-1 order-md-2">
-    <img src="/static/images/hero.png" class="img-fluid" />
+  <div class="column">
+    <div class="text-center my-5">
+      <h1 class="fw-bold text-center">Features</h1>
+      <p>
+        BookNest offers a range of features to help you manage your reading
+        life.
+      </p>
+    </div>
+    <div class="row align-items-center justify-content-between">
+      <div class="col-md-6">
+        <h3>All Your Books in One Place</h3>
+        <p>
+          Easily log the books you own, want to read, or have already finished.
+          BookNest keeps your personal library organized and accessible at any
+          time.
+        </p>
+      </div>
+      <div class="col-md-4">
+        <img class="img-fluid" src="static/images/books.png" />
+      </div>
+    </div>
+    <div class="row align-items-center g-0">
+      <div class="col-md-6 order-1 order-md-2">
+        <h3>Made for Book Lovers</h3>
+        <p class="">
+          Designed with passionate readers in mind. BookNest offers a cozy
+          digital space to celebrate your reading journey and build your dream
+          bookshelf.
+        </p>
+      </div>
+      <div class="col-md-4 order-2 order-md-1">
+        <img class="img-fluid" src="static/images/book-lover.png" />
+      </div>
+    </div>
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <h3>Your Digital Reading Journal</h3>
+        <p>
+          Keep a dedicated notebook for your reading journey. From impressions
+          and thoughts to reviews, everything is saved in one clean,
+          distraction-free place.
+        </p>
+      </div>
+      <div class="col-md-6">
+        <img class="img-fluid" src="static/images/notebook.png" />
+      </div>
+    </div>
   </div>
-</div>
-<div class="column">
-  <h1 class="fw-bold text-center">Features</h1>
-</div>
+</main>
 {%endblock%}

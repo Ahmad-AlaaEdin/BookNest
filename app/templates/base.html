@@ -26,9 +26,9 @@
 
     <title>{% block title%} {%endblock%}</title>
   </head>
-  <body class="container mx-auto" style="font-family: 'Inter'">
-    <header class="p-2">
-      <div class="d-flex justify-content-between">
+  <body class="mx-auto" style="font-family: 'Inter'">
+    <header class="p-2 shadow-sm">
+      <div class="container d-flex justify-content-between">
         <p style="font: bold 20px 'Playfair Display'">BookNest</p>
         <div>
           <a class="btn btn-primary fw-bold mx-1" href="/login">Login</a
@@ -37,6 +37,8 @@
       </div>
     </header>
     {% block content%} {%endblock%}
-    <footer></footer>
+    <footer class="bg-light p-4 text-center shadow bg-body-tertiary">
+      <p>© 2025 BookNest. All rights reserved.</p>
+    </footer>
   </body>
 </html>
