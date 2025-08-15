@@ -20,7 +20,7 @@ List those here (if any).
 
 - [x] It is available on GitHub.
 - [x] It uses the Flask web framework.
-- [ ] It uses at least one module from the Python Standard Library other than the random module.  
+- [x] It uses at least one module from the Python Standard Library other than the random module.  
   Please provide the name of the module you are using in your app.  
   - Module name:
 - [x] It contains at least one class written by you that has both properties and methods. It uses `__init__()` to let the class initialize the object's attributes (note that `__init__()` doesn't count as a method). This includes instantiating the class and using the methods in your app.  
@@ -32,7 +32,7 @@ List those here (if any).
   - File name and line numbers where the methods are used:
 - [ ] It makes use of JavaScript in the front end and uses the localStorage of the web browser.
 - [ ] It uses modern JavaScript (for example, let and const rather than var).
-- [ ] It makes use of the reading and writing to the same file feature.
+- [x] It makes use of the reading and writing to the same file feature.
 - [x] It contains conditional statements. Please provide below the file name and the line number(s) of at least:
 
 
