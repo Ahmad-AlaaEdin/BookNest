@@ -75,7 +75,15 @@ def signup():
 @main.route("/dashboard")
 @login_required
 def dashboard():
-    books = db.session.query(Book).filter_by(user_id=current_user.id).all()
+    title = request.args.get("title")
+    status = request.args.get("status")
+    stmt = select(Book).filter_by(user_id=current_user.id)
+    if title:
+        stmt = stmt.filter(Book.title.ilike(f"%{title}%"))
+    if status:
+        stmt = stmt.filter_by(status=status)
+
+    books = db.session.scalars(stmt).all()
 
     books_dict = [
         {
@@ -87,7 +95,7 @@ def dashboard():
         }
         for book in books
     ]
-    return render_template("dashboard.html",books=books_dict)
+    return render_template("dashboard.html", books=books_dict)
 
 
 @main.route("/profile")

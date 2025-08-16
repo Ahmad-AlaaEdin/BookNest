@@ -16,5 +16,11 @@
         "name": "ali",
         "email": "ahmad@gmail.com",
         "password_hash": "scrypt:32768:8:1$DHt74U67OSTPLSNw$661bc73110e86ea09f1808c4d3dc7752f47e84d54daf83e7abf71b99774bd33980c20510cd7db228beb650f4dfb5105a66fe7f0719a439a0fa7c6c81d615d51e"
+    },
+    {
+        "id": "3144ab32-7876-4c24-b89f-19defc5a16a5",
+        "name": "\u0623\u062d\u0645\u062f",
+        "email": "a@asu.com",
+        "password_hash": "scrypt:32768:8:1$Ji9Dp5eUh7nkpT8j$a0d350915365bc12941298f3e2d34a5f0a622425694b9e95f9f864528d18924301a268f2f46f40b13bba679ae27e34271d59a4a7dbb858e69ee9099262539940"
     }
 ]
