@@ -91,6 +91,7 @@ def dashboard():
             "title": book.title,
             "author": book.author,
             "pages": book.pages,
+            "image":book.image,
             "status": book.status,
         }
         for book in books
@@ -112,16 +113,21 @@ def add_book():
     author = request.form.get("author")
     pages = request.form.get("pages")
     status = request.form.get("status")
-
+    image = request.form.get("image", "/static/images/default.png")
     if not title or not author or not pages or not status:
-        flash("All Fields Are Required")
-        return redirect("/dashboard")
+        return jsonify(message="All Fields Required"), 400
+
     new_book = Book(
-        user_id=current_user.id, title=title, author=author, pages=pages, status=status
+        user_id=current_user.id,
+        title=title,
+        author=author,
+        pages=pages,
+        image=image,
+        status=status,
     )
     db.session.add(new_book)
     db.session.commit()
-    return redirect("/dashboard")
+    return jsonify(message="Book Added Succesfuly"), 200
 
 
 @main.route("/books", methods=["DELETE"])

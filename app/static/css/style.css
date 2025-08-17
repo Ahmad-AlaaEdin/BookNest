@@ -1,7 +1,11 @@
-:root{
---primary-color:#3D6BB5;
+:root {
+  --primary-color: #3d6bb5;
+  --secoandry-color: #e8edf5;
 }
 
+.btn-primary {
+  background-color: var(--primary-color);
+}
 .w-md-50 {
   width: 100%;
 }
@@ -9,4 +13,29 @@
   .w-md-50 {
     width: 50%;
   }
+}
+
+.results-list {
+  position: absolute;
+  top: 100%;
+  left: 3%;
+  z-index: 999;
+  display: none;
+  background-color: white;
+  padding: 20px;
+  border: 1px solid gray;
+  border-radius: 5px;
+  width: 94%;
+}
+.list-item {
+  display: flex;
+  padding: 5px;
+  border-bottom: 1px solid gray;
+}
+.book-img {
+  width: 120px;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
 }
