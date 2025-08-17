@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+      crossorigin="anonymous"
+    ></script>
+
+    <link rel="stylesheet" href="static/css/style.css" />
+
+    <title>Dashboard</title>
+  </head>
+  <body class="d-flex flex-column mx-auto vh-100" style="font-family: 'Inter'">
+    <header class="p-2 shadow-sm">
+      <div class="container d-flex justify-content-between">
+        <p style="font: bold 20px 'Playfair Display'">BookNest</p>
+        <div>
+          {% if current_user.is_authenticated %}
+          <a href="/profile">{{current_user.name}}</a>
+          <a class="btn btn-secondary">Logout</a>
+          {% else %}
+          <a href="{{ url_for('auth.login') }}">Login</a>
+          {% endif %}
+        </div>
+      </div>
+    </header>
+    <main class="flex-grow-1 container my-5">
+      <section class="card shadow-sm mb-4">
+        <div class="row g-0 align-items-center p-4 text-center">
+          <div class="col-md-4 text-center">
+            <img
+              src="{{ book.image }}"
+              class="img-fluid rounded shadow-sm"
+              style="max-height: 250px"
+            />
+          </div>
+          <div class="col-md-8 ps-md-4 my-1">
+            <h3 class="fw-bold mb-2">{{ book.title }}</h3>
+            <p class="mb-1"><strong>Author:</strong> {{ book.author }}</p>
+            <p class="mb-1"><strong>Pages:</strong> {{ book.pages }}</p>
+            <p class="mb-3">
+              <strong>Status:</strong>
+              <span
+                class="badge {% if book.status == 'read' %} bg-success {% elif book.status == 'reading' %} bg-warning text-dark {% elif book.status == 'to_read' %} bg-secondary {% endif %}"
+              >
+                {% if book.status == 'read' %} Finished {% elif book.status ==
+                'reading' %} Reading {% elif book.status == 'to_read' %} To Read
+                {% endif %}
+              </span>
+            </p>
+            <div class="btn-group">
+              <button
+                class="btn btn-outline-secondary btn-sm"
+                id="book-update-btn"
+              >
+                Update
+              </button>
+              <button
+                class="btn btn-outline-danger btn-sm"
+                id="book-delete-btn"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="card shadow-sm p-4">
+        <h5 class="fw-bold mb-3">Notes</h5>
+        <form method="POST" action="/books/{{ book.id }}/notes" id="note-form">
+          <div class="input-group">
+            <input
+              type="text"
+              name="content"
+              class="form-control"
+              id="note-input"
+              placeholder="Write a note..."
+              required
+            />
+            <button type="submit" class="btn btn-primary">Add</button>
+          </div>
+        </form>
+        {% if book.notes %}
+       <ul class="list-group list-group-flush mb-3" id="notes-list">
+  {% for note in book.notes %}
+  <li class="list-group-item d-flex justify-content-between align-items-start">
+   
+    <div class="flex-grow-1 me-3" style="white-space: normal; word-wrap: break-word; max-width: 60%;">
+      {{ note.content }}
+    </div>
+
+    
+    <small class="text-muted me-3">
+      {{ note.created_at.strftime('%b %d, %Y') if note.created_at else '' }}
+    </small>
+
+    
+    <div class="btn-group flex-shrink-0">
+      <button class="btn btn-outline-secondary btn-sm note-update-btn"
+              data-note-id="{{ note.id }}">
+        Update
+      </button>
+      <button class="btn btn-outline-danger btn-sm note-delete-btn" id="delete-note-btn"
+              data-note-id="{{ note.id }}">
+        Delete
+      </button>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+
+        {% else %}
+        <p class="text-muted">No notes yet. Add your first one below.</p>
+        {% endif %}
+      </section>
+    </main>
+    <div
+      class="modal fade"
+      id="exampleModalToggle"
+      aria-hidden="true"
+      aria-labelledby="exampleModalToggleLabel"
+      tabindex="-1"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalToggleLabel">
+              Search For Book
+            </h1>
+
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" style="position: relative">
+            <input
+              class="form-control"
+              type="text"
+              placeholder="Book Title"
+              id="book-search"
+              style="height: 100%"
+            />
+            <div class="results-list">results</div>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-primary"
+              data-bs-target="#exampleModalToggle2"
+              data-bs-toggle="modal"
+            >
+              Add It Manually
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="exampleModalToggle2"
+      aria-hidden="true"
+      aria-labelledby="exampleModalToggleLabel2"
+      tabindex="-1"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">
+              Add Book Manually
+            </h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form class="form text-center" id="add-book-form">
+              <input
+                class="form-control mb-1"
+                placeholder="Title"
+                name="title"
+              />
+              <input
+                class="form-control mb-1"
+                placeholder="Author"
+                name="author"
+              />
+              <input
+                class="form-control mb-1"
+                placeholder="Pages"
+                type="number"
+                name="pages"
+              />
+              <input
+                class="form-control mb-1"
+                placeholder="Image Url"
+                name="image"
+              />
+              <select class="form-control mb-1" name="status">
+                <option value="to_read">To Read</option>
+                <option value="read">Finished</option>
+                <option value="reading">Reading</option>
+              </select>
+              <input type="submit" class="btn btn-primary" value="Add" />
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-primary"
+              data-bs-target="#exampleModalToggle"
+              data-bs-toggle="modal"
+            >
+              Back to first
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div
+        class="toast align-items-center text-bg-{{ category }} border-0 mb-2 show"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        data-bs-autohide="true"
+        data-bs-delay="3000"
+      >
+        <div class="d-flex">
+          <div class="toast-body">{{ message }}</div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+      {% endfor %} {% endif %} {% endwith %}
+    </div>
+    <footer class="bg-light p-4 text-center shadow bg-body-tertiary">
+      <p>© 2025 BookNest. All rights reserved.</p>
+    </footer>
+    <script src="/static/js/main.js"></script>
+  </body>
+</html>

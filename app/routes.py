@@ -1,11 +1,22 @@
-from flask import Blueprint, render_template, request, redirect, session, flash, jsonify
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    redirect,
+    session,
+    flash,
+    jsonify,
+    abort,
+)
 from .models.user import User
 from flask_login import login_required, current_user, logout_user
 from .utils import User_File_Handler
 from werkzeug.security import generate_password_hash
 from .models.book import Book
+from .models.note import Note
 from app import db
 from sqlalchemy import delete, update, select
+from sqlalchemy.orm import joinedload
 
 handler = User_File_Handler("app/users.json")
 
@@ -91,7 +102,7 @@ def dashboard():
             "title": book.title,
             "author": book.author,
             "pages": book.pages,
-            "image":book.image,
+            "image": book.image,
             "status": book.status,
         }
         for book in books
@@ -128,6 +139,65 @@ def add_book():
     db.session.add(new_book)
     db.session.commit()
     return jsonify(message="Book Added Succesfuly"), 200
+
+
+@main.route("/books/<int:book_id>", methods=["GET"])
+@login_required
+def get_book(book_id):
+    book = (
+        db.session.query(Book)
+        .options(joinedload(Book.notes))
+        .filter_by(id=book_id, user_id=current_user.id)
+        .first()
+    )
+    if not book:
+        abort(404, description="Book not found")
+
+    print(book.notes)
+    return render_template("book.html", book=book)
+
+
+@main.route("/books/<int:book_id>/notes", methods=["POST"])
+@login_required
+def add_note(book_id):
+    data = request.get_json()
+    content = data.get("content") if data else None
+
+    if not content:
+        return jsonify(message="Content Required"), 400
+
+    new_note = Note(
+        book_id=book_id,
+        content=content,
+    )
+    db.session.add(new_note)
+    db.session.commit()
+
+    note_dict = {
+        "id": new_note.id,
+        "content": new_note.content,
+        "created_at": (
+            new_note.created_at.strftime("%b %d, %Y") if new_note.created_at else ""
+        ),
+    }
+    return jsonify(note_dict), 200
+
+
+@main.route("/notes/<int:note_id>", methods=["DELETE"])
+@login_required
+def delete_note(note_id):
+
+    if not note_id:
+        return jsonify(message="Note Not Found"), 404
+
+    stm = select(Note).where(Note.id == note_id)
+
+    note = db.session.get(Note, note_id)
+    if note:
+        db.session.delete(note)
+        db.session.commit()
+        return jsonify(message="Deleted successfully"), 201
+    return jsonify(message="Note Not Found"), 404
 
 
 @main.route("/books", methods=["DELETE"])

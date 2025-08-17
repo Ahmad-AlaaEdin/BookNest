@@ -1,5 +1,5 @@
 from sqlalchemy import ForeignKey, String, Enum
-from sqlalchemy.orm import Relationship, Mapped, mapped_column
+from sqlalchemy.orm import Relationship, Mapped, mapped_column, relationship
 from .base import Base
 from typing import List, Optional
 
@@ -13,6 +13,6 @@ class Book(Base):
     pages: Mapped[int]
     image: Mapped[str]
     status: Mapped[str] = mapped_column(Enum("to_read", "read", "reading"))
-    notes: Mapped[List["Note"]] = Relationship(
+    notes: Mapped[List["Note"]] = relationship(
         back_populates="book", cascade="all, delete-orphan"
     )
