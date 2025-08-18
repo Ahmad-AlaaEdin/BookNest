@@ -1,8 +1,66 @@
 {% extends 'base.html' %} {% block content %}
-<h1>Profile</h1>
-{% if current_user.is_authenticated %}
-<p>Welcome, {{ current_user.username }}!</p>
-<a href="{{ url_for('auth.logout') }}">Logout</a>
-{% else %}
-<a href="{{ url_for('auth.login') }}">Login</a>
-{% endif %} {%endblock%}
+<main class="w-md-50 mx-auto">
+  <div class="d-flex flex-column">
+    <h1 class="text-center">Update Your Data</h1>
+    <form id="name-form">
+      <label class="form-label" for="name" id="user-name">Name</label>
+      <input
+        class="form-control mb-2"
+        type="text"
+        placeholder="Name"
+        name="name"
+        id="name"
+        value="{{ current_user.name }}"
+        required
+      />
+      <label class="form-label" for="email">Email</label>
+      <input
+        class="form-control mb-2"
+        type="email"
+        placeholder="Email"
+        name="email"
+        id="email"
+        value="{{ current_user.email }}"
+        disabled
+      />
+
+      <button class="btn btn-primary text-center" type="submit">Update</button>
+    </form>
+
+    <div class="d-flex flex-column">
+      <h1 class="text-center">Change Your Password</h1>
+      <form id="password-form">
+        <label class="form-label" for="old-password">Old Password</label>
+        <input
+          class="form-control mb-2"
+          type="password"
+          name="old-password"
+          placeholder="Password"
+          required
+        />
+        <label class="form-label" for="new-password">New Password</label>
+        <input
+          class="form-control mb-2"
+          type="password"
+          name="new-password"
+          placeholder="New Password"
+          required
+        />
+        <label class="form-label" for="password-confirm"
+          >Password Confirm</label
+        >
+        <input
+          class="form-control mb-2"
+          type="password"
+          name="password-confirm"
+          placeholder="Password Confirm"
+          required
+        />
+        <button class="btn btn-primary text-center" type="submit">
+          Change
+        </button>
+      </form>
+    </div>
+  </div>
+</main>
+{% endblock %}

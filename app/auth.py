@@ -24,7 +24,7 @@ def signup():
     user = User.create(name, email, password)
     handler.add(user)
     flash("Signup Succed")
-    return redirect("/signup")
+    return redirect("/login")
 
 
 @auth.route("/login", methods=["POST"])
@@ -33,26 +33,26 @@ def login():
     email = request.form.get("email")
     password = request.form.get("password")
     if not email or not password:
-        flash("Both Username and Password Required")
+        flash("Both Email and Password Required")
         return redirect("/login")
 
-    print(email)
     usr = handler.get_by_email(email)
     if usr:
-        print("found")
-        
+
         if usr.check_password(password):
             login_user(usr)
             flash("logged in succesfully")
             return redirect("/dashboard")
-        flash("Invalid Username or Password ")
+        flash("Invalid Email or Password ")
     else:
         flash("User Not Found")
 
     return redirect("/login")
 
 
-@auth.route("/logout", methods=["POST"])
+@auth.route(
+    "/logout",
+)
 def logout():
     logout_user()
     return redirect("/login")

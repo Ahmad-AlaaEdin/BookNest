@@ -39,38 +39,39 @@ def delete_user():
 @main.route("/password", methods=["PATCH"])
 @login_required
 def update_password():
-    password = request.form.get("password")
-    new_password = request.form.get("newPassword")
-    password_confirm = request.form.get("passwordConfirm")
+
+    password = request.form.get("old-password")
+    new_password = request.form.get("new-password")
+    password_confirm = request.form.get("password-confirm")
+
     if not password or not new_password or not password_confirm:
-        flash("Please Provide Old Password and New password")
-        return redirect("/profile")
+        return jsonify(message="Please provide old password and new password"), 400
+
     if not current_user.check_password(password):
-        flash("Old Password Not Correct")
-        return redirect("/profile")
+        return jsonify(message="Old password is not correct"), 401
+
     if new_password != password_confirm:
-        flash("New Password and Password Confirm Not Equal")
-        return redirect("/profile")
+        return jsonify(message="New password and confirmation do not match"), 400
 
     current_user.password_hash = generate_password_hash(new_password)
     handler.update(current_user)
     logout_user()
-    flash("Please Relogin")
-    return redirect("/login")
+
+    return jsonify(message="Password updated successfully. Please relogin."), 200
 
 
 @main.route("/user", methods=["PATCH"])
 @login_required
 def update_name():
-    name = request.form.get("name")
+    name = request.form.get("name", "")
 
     if not name:
-        flash("Please Provide Name")
-        return redirect("/profile")
+        return jsonify(message="Please provide Name"), 400
 
     current_user.name = name
     handler.update(current_user)
-    return redirect("/profile")
+
+    return jsonify(message="Name updated successfully."), 200
 
 
 @main.route("/login")
@@ -190,7 +191,6 @@ def delete_note(note_id):
     if not note_id:
         return jsonify(message="Note Not Found"), 404
 
-    
     note = db.session.get(Note, note_id)
     if note:
         db.session.delete(note)
@@ -198,23 +198,30 @@ def delete_note(note_id):
         return jsonify(message="Deleted successfully"), 201
     return jsonify(message="Note Not Found"), 404
 
+
 @main.route("/notes/<int:note_id>", methods=["PUT"])
 @login_required
 def update_note(note_id):
     data = request.get_json()
-    
+
     note = db.session.get(Note, note_id)
     if not note or note.book.user_id != current_user.id:
         return jsonify(message="Note Not Found"), 404
-    
+
     note.content = data.get("content", note.content)
     db.session.commit()
-    
-    return jsonify({
-        "id": note.id,
-        "content": note.content,
-        "message": "Note updated successfully"
-    }), 200
+
+    return (
+        jsonify(
+            {
+                "id": note.id,
+                "content": note.content,
+                "message": "Note updated successfully",
+            }
+        ),
+        200,
+    )
+
 
 @main.route("/books/<int:book_id>", methods=["DELETE"])
 @login_required

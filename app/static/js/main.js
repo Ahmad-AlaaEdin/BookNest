@@ -10,14 +10,57 @@ const updateBookForm = document.getElementById("update-book-form");
 const deleteNoteBtn = document.getElementById("delete-note-btn");
 const noteForm = document.getElementById("note-form");
 const deleteBookBtn = document.getElementById("delete-book-btn");
-
+const passwordForm = document.getElementById("password-form");
 const updateNoteForm = document.getElementById("update-note-form");
-
 const updateNoteModalEl = document.getElementById("updateNoteModal");
-const updateNoteModal = new bootstrap.Modal(updateNoteModalEl);
+const nameForm = document.getElementById("name-form");
+
+if (nameForm)
+  nameForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(nameForm);
+    console.log(formData);
+    const response = await fetch(`/user`, {
+      method: "PATCH",
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert(data.message);
+    } else {
+      alert(data.message);
+    }
+  });
+let updateNoteModal = null;
+if (updateNoteModalEl) {
+  updateNoteModal = new bootstrap.Modal(updateNoteModalEl);
+}
+
+if (passwordForm)
+  passwordForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(passwordForm);
+    console.log(formData);
+    const response = await fetch(`/password`, {
+      method: "PATCH",
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      window.location.href = "/login";
+    } else {
+      alert(data.message);
+    }
+  });
 
 document.addEventListener("click", (event) => {
-  if (event.target.classList.contains("note-update-btn")) {
+  if (event.target.classList.contains("note-update-btn") && updateNoteModal) {
     const noteId = event.target.dataset.noteId;
     const noteLi = document.querySelector(`li[data-note-id="${noteId}"]`);
     const content = noteLi.querySelector("span").textContent;
@@ -28,30 +71,30 @@ document.addEventListener("click", (event) => {
     updateNoteModal.show();
   }
 });
+if (updateNoteForm)
+  updateNoteForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-updateNoteForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
+    const formData = new FormData(updateNoteForm);
+    const noteId = formData.get("note_id");
 
-  const formData = new FormData(updateNoteForm);
-  const noteId = formData.get("note_id");
+    const response = await fetch(`/notes/${noteId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: formData.get("content") }),
+    });
 
-  const response = await fetch(`/notes/${noteId}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ content: formData.get("content") }),
+    const data = await response.json();
+
+    if (response.ok) {
+      const noteLi = document.querySelector(`li[data-note-id="${noteId}"]`);
+      noteLi.querySelector("span").textContent = data.content;
+
+      updateNoteModal.hide();
+    } else {
+      alert(data.message);
+    }
   });
-
-  const data = await response.json();
-
-  if (response.ok) {
-    const noteLi = document.querySelector(`li[data-note-id="${noteId}"]`);
-    noteLi.querySelector("span").textContent = data.content;
-
-    updateNoteModal.hide();
-  } else {
-    alert(data.message);
-  }
-});
 
 if (deleteBookBtn)
   deleteBookBtn.addEventListener("click", async () => {
@@ -131,15 +174,28 @@ if (noteForm)
       if (!response.ok) throw new Error("Request failed");
 
       const data = await response.json();
-      const notesList = document.getElementById("notes-list");
+      let notesList = document.getElementById("notes-list");
+      
+      // If notes list doesn't exist, create it (happens when no notes exist initially)
+      if (!notesList) {
+        const notesSection = document.querySelector(".card.shadow-sm.p-4");
+        const noNotesText = notesSection.querySelector("p.text-muted");
+        if (noNotesText) noNotesText.remove();
+        
+        notesList = document.createElement("ul");
+        notesList.className = "list-group list-group-flush mb-3";
+        notesList.id = "notes-list";
+        notesSection.appendChild(notesList);
+      }
+      
       const li = document.createElement("li");
       li.className =
-        "list-group-item d-flex justify-content-between align-items-center";
+        "list-group-item d-flex justify-content-between align-items-start";
       li.dataset.noteId = data.id;
       li.innerHTML = `
-      <span>${data.content}</span>
-      <small class="text-muted">${data.created_at}</small>
-      <div class="btn-group">
+      <span class="flex-grow-1 me-3" style="white-space: normal; word-wrap: break-word; max-width: 60%">${data.content}</span>
+      <small class="text-muted me-3">${data.created_at}</small>
+      <div class="btn-group flex-shrink-0">
         <button class="btn btn-outline-secondary btn-sm note-update-btn" data-note-id="${data.id}">Update</button>
         <button class="btn btn-outline-danger btn-sm note-delete-btn" data-note-id="${data.id}">Delete</button>
       </div>
