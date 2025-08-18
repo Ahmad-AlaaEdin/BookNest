@@ -29,7 +29,7 @@
       crossorigin="anonymous"
     ></script>
 
-    <link rel="stylesheet" href="static/css/style.css" />
+    <link rel="stylesheet" href="/static/css/style.css" />
 
     <title>Dashboard</title>
   </head>
@@ -73,14 +73,17 @@
             </p>
             <div class="btn-group">
               <button
+                type="button"
                 class="btn btn-outline-secondary btn-sm"
-                id="book-update-btn"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
               >
                 Update
               </button>
               <button
                 class="btn btn-outline-danger btn-sm"
-                id="book-delete-btn"
+                id="delete-book-btn"
+                data-book-id="{{ book.id }}"
               >
                 Delete
               </button>
@@ -104,33 +107,42 @@
           </div>
         </form>
         {% if book.notes %}
-       <ul class="list-group list-group-flush mb-3" id="notes-list">
-  {% for note in book.notes %}
-  <li class="list-group-item d-flex justify-content-between align-items-start">
-   
-    <div class="flex-grow-1 me-3" style="white-space: normal; word-wrap: break-word; max-width: 60%;">
-      {{ note.content }}
-    </div>
+        <ul class="list-group list-group-flush mb-3" id="notes-list">
+          {% for note in book.notes %}
+          <li
+            class="list-group-item d-flex justify-content-between align-items-start"
+            data-note-id="{{ note.id }}"
+          >
+            <span
+              class="flex-grow-1 me-3"
+              style="white-space: normal; word-wrap: break-word; max-width: 60%"
+            >
+              {{ note.content }}
+            </span>
 
-    
-    <small class="text-muted me-3">
-      {{ note.created_at.strftime('%b %d, %Y') if note.created_at else '' }}
-    </small>
+            <small class="text-muted me-3">
+              {{ note.created_at.strftime('%b %d, %Y') if note.created_at else
+              '' }}
+            </small>
 
-    
-    <div class="btn-group flex-shrink-0">
-      <button class="btn btn-outline-secondary btn-sm note-update-btn"
-              data-note-id="{{ note.id }}">
-        Update
-      </button>
-      <button class="btn btn-outline-danger btn-sm note-delete-btn" id="delete-note-btn"
-              data-note-id="{{ note.id }}">
-        Delete
-      </button>
-    </div>
-  </li>
-  {% endfor %}
-</ul>
+            <div class="btn-group flex-shrink-0">
+              <button
+                class="btn btn-outline-secondary btn-sm note-update-btn"
+                data-note-id="{{ note.id }}"
+              >
+                Update
+              </button>
+              <button
+                class="btn btn-outline-danger btn-sm note-delete-btn"
+                id="delete-note-btn"
+                data-note-id="{{ note.id }}"
+              >
+                Delete
+              </button>
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
 
         {% else %}
         <p class="text-muted">No notes yet. Add your first one below.</p>
@@ -139,59 +151,16 @@
     </main>
     <div
       class="modal fade"
-      id="exampleModalToggle"
-      aria-hidden="true"
-      aria-labelledby="exampleModalToggleLabel"
+      id="exampleModal"
       tabindex="-1"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalToggleLabel">
-              Search For Book
-            </h1>
-
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body" style="position: relative">
-            <input
-              class="form-control"
-              type="text"
-              placeholder="Book Title"
-              id="book-search"
-              style="height: 100%"
-            />
-            <div class="results-list">results</div>
-          </div>
-          <div class="modal-footer">
-            <button
-              class="btn btn-primary"
-              data-bs-target="#exampleModalToggle2"
-              data-bs-toggle="modal"
-            >
-              Add It Manually
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="modal fade"
-      id="exampleModalToggle2"
+      aria-labelledby="exampleModalLabel"
       aria-hidden="true"
-      aria-labelledby="exampleModalToggleLabel2"
-      tabindex="-1"
     >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">
-              Add Book Manually
+              Update Book
             </h1>
             <button
               type="button"
@@ -201,48 +170,80 @@
             ></button>
           </div>
           <div class="modal-body">
-            <form class="form text-center" id="add-book-form">
+            <form class="form text-center" id="update-book-form">
+              <input type="hidden" name="book_id" value="{{ book.id }}" />
+
               <input
                 class="form-control mb-1"
                 placeholder="Title"
                 name="title"
+                value="{{ book.title }}"
+                required
               />
               <input
                 class="form-control mb-1"
                 placeholder="Author"
                 name="author"
+                type="text"
+                value="{{ book.author }}"
+                required
               />
               <input
                 class="form-control mb-1"
                 placeholder="Pages"
                 type="number"
                 name="pages"
+                min="1"
+                value="{{ book.pages }}"
+                required
               />
               <input
                 class="form-control mb-1"
                 placeholder="Image Url"
                 name="image"
+                value="{{ book.image }}"
               />
               <select class="form-control mb-1" name="status">
-                <option value="to_read">To Read</option>
-                <option value="read">Finished</option>
-                <option value="reading">Reading</option>
+                <option value="to_read" {{ 'selected' if book.status == 'to_read' else '' }}>To Read</option>
+                <option value="read" {{ 'selected' if book.status == 'read' else '' }}>Finished</option>
+                <option value="reading" {{ 'selected' if book.status == 'reading' else '' }}>Reading</option>
+
               </select>
-              <input type="submit" class="btn btn-primary" value="Add" />
+
+              <input type="submit" class="btn btn-primary" value="Update" />
             </form>
-          </div>
-          <div class="modal-footer">
-            <button
-              class="btn btn-primary"
-              data-bs-target="#exampleModalToggle"
-              data-bs-toggle="modal"
-            >
-              Back to first
-            </button>
           </div>
         </div>
       </div>
     </div>
+
+<div class="modal fade" id="updateNoteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="update-note-form">
+        <div class="modal-header">
+          <h5 class="modal-title">Update Note</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <textarea
+            class="form-control"
+            id="note-content-input"
+            name="content"
+            rows="4"
+            required
+          ></textarea>
+          <input type="hidden" name="note_id" id="note-id-input" />
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
       {% with messages = get_flashed_messages(with_categories=true) %} {% if
       messages %} {% for category, message in messages %}

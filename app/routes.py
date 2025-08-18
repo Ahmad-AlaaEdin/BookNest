@@ -190,8 +190,7 @@ def delete_note(note_id):
     if not note_id:
         return jsonify(message="Note Not Found"), 404
 
-    stm = select(Note).where(Note.id == note_id)
-
+    
     note = db.session.get(Note, note_id)
     if note:
         db.session.delete(note)
@@ -199,23 +198,42 @@ def delete_note(note_id):
         return jsonify(message="Deleted successfully"), 201
     return jsonify(message="Note Not Found"), 404
 
-
-@main.route("/books", methods=["DELETE"])
+@main.route("/notes/<int:note_id>", methods=["PUT"])
 @login_required
-def delete_book():
+def update_note(note_id):
+    data = request.get_json()
+    
+    note = db.session.get(Note, note_id)
+    if not note or note.book.user_id != current_user.id:
+        return jsonify(message="Note Not Found"), 404
+    
+    note.content = data.get("content", note.content)
+    db.session.commit()
+    
+    return jsonify({
+        "id": note.id,
+        "content": note.content,
+        "message": "Note updated successfully"
+    }), 200
 
-    book_id = request.form.get("book_id")
-
-    if not book_id:
-        flash("Book Id Required")
-        return redirect("/dashboard")
-    stm = select(Book).where(Book.id == book_id)
+@main.route("/books/<int:book_id>", methods=["DELETE"])
+@login_required
+def delete_book(book_id):
 
     book = db.session.get(Book, book_id)
+    if not book or book.user_id != current_user.id:
+
+        return (
+            jsonify(
+                message="Book not found or you do not have permission to update it."
+            ),
+            404,
+        )
+
     if book:
         db.session.delete(book)
         db.session.commit()
-    return redirect("/dashboard")
+    return jsonify(message="Deleted"), 201
 
 
 @main.route("/books", methods=["GET"])
@@ -237,11 +255,10 @@ def get_all_books():
     return jsonify(books_dict)
 
 
-@main.route("/books", methods=["PATCH"])
+@main.route("/books/<int:book_id>", methods=["PUT"])
 @login_required
-def update_book():
+def update_book(book_id):
 
-    book_id = request.form.get("book_id")
     title = request.form.get("title")
     author = request.form.get("author")
     pages = request.form.get("pages")
@@ -250,12 +267,16 @@ def update_book():
     if not book_id:
         flash("Book Id Required")
         return redirect("/dashboard")
-    stm = select(Book).where(Book.id == book_id).where(Book.user_id == current_user.id)
 
     book = db.session.get(Book, book_id)
     if not book or book.user_id != current_user.id:
-        flash("Book not found or unauthorized")
-        return redirect("/dashboard")
+
+        return (
+            jsonify(
+                message="Book not found or you do not have permission to update it."
+            ),
+            404,
+        )
 
     if title:
         book.title = title
@@ -270,7 +291,7 @@ def update_book():
         book.status = status
 
     db.session.commit()
-    return redirect("/dashboard")
+    return jsonify(message="Book updated successfully!"), 200
 
 
 """

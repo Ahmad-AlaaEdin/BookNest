@@ -6,7 +6,81 @@ const statusBtns = document.querySelectorAll(".status-btn");
 const resultsList = document.querySelector(".results-list");
 const modal2 = document.getElementById("exampleModalToggle2");
 const addBookForm = document.getElementById("add-book-form");
+const updateBookForm = document.getElementById("update-book-form");
 const deleteNoteBtn = document.getElementById("delete-note-btn");
+const noteForm = document.getElementById("note-form");
+const deleteBookBtn = document.getElementById("delete-book-btn");
+
+const updateNoteForm = document.getElementById("update-note-form");
+
+const updateNoteModalEl = document.getElementById("updateNoteModal");
+const updateNoteModal = new bootstrap.Modal(updateNoteModalEl);
+
+document.addEventListener("click", (event) => {
+  if (event.target.classList.contains("note-update-btn")) {
+    const noteId = event.target.dataset.noteId;
+    const noteLi = document.querySelector(`li[data-note-id="${noteId}"]`);
+    const content = noteLi.querySelector("span").textContent;
+
+    document.getElementById("note-content-input").value = content;
+    document.getElementById("note-id-input").value = noteId;
+
+    updateNoteModal.show();
+  }
+});
+
+updateNoteForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const formData = new FormData(updateNoteForm);
+  const noteId = formData.get("note_id");
+
+  const response = await fetch(`/notes/${noteId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content: formData.get("content") }),
+  });
+
+  const data = await response.json();
+
+  if (response.ok) {
+    const noteLi = document.querySelector(`li[data-note-id="${noteId}"]`);
+    noteLi.querySelector("span").textContent = data.content;
+
+    updateNoteModal.hide();
+  } else {
+    alert(data.message);
+  }
+});
+
+if (deleteBookBtn)
+  deleteBookBtn.addEventListener("click", async () => {
+    const bookId = deleteBookBtn.getAttribute("data-book-id");
+
+    if (!confirm("Are you sure you want to delete this book?")) return;
+
+    try {
+      const response = await fetch(`/books/${bookId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const parsedRes = await response.json();
+
+      if (response.ok) {
+        alert(parsedRes.message);
+
+        window.location.href = "/dashboard";
+      } else {
+        alert(parsedRes.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting the book.");
+    }
+  });
 
 document.addEventListener("click", async function (e) {
   if (e.target.classList.contains("note-delete-btn")) {
@@ -37,9 +111,8 @@ document.addEventListener("click", async function (e) {
   }
 });
 
-document
-  .getElementById("note-form")
-  .addEventListener("submit", async function (e) {
+if (noteForm)
+  noteForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const input = document.getElementById("note-input");
@@ -79,75 +152,95 @@ document
       alert("Could not add note. Try again.");
     }
   });
-addBookForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const data = new FormData(addBookForm);
-  console.log(data);
-  const response = await fetch("/books", {
-    method: "POST",
-    body: data,
+
+if (addBookForm)
+  addBookForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const data = new FormData(addBookForm);
+    console.log(data);
+    const response = await fetch("/books", {
+      method: "POST",
+      body: data,
+    });
+
+    const parsedRes = await response.json();
+    if (response.ok) {
+      location.reload(true);
+    } else {
+      alert(parsedRes.message);
+    }
+  });
+if (updateBookForm)
+  updateBookForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const data = new FormData(updateBookForm);
+    const bookID = data.get("book_id");
+    console.log(data);
+    const response = await fetch(`/books/${bookID}`, {
+      method: "PUT",
+      body: data,
+    });
+    console.log(response);
+    const parsedRes = await response.json();
+    if (response.ok) {
+      location.reload(true);
+    } else {
+      alert(parsedRes.message);
+    }
+  });
+let timeout = null;
+if (bookSearch) {
+  bookSearch.addEventListener("input", () => {
+    clearTimeout(timeout);
+
+    timeout = setTimeout(() => {
+      let query = bookSearch.value.trim();
+      if (query.length > 3) {
+        fetchBooks(query);
+      } else {
+        console.log("empty");
+      }
+    }, 500);
   });
 
-  const parsedRes = await response.json();
-  if (response.ok) {
-    location.reload(true);
-  } else {
-    alert(parsedRes.message);
-  }
-});
+  bookSearch.addEventListener("focus", () => {
+    resultsList.style.display = "block";
+  });
+  document.querySelector(".results-list").addEventListener("click", (e) => {
+    const btn = e.target.closest("button.list-item");
+    console.log(btn);
+    if (!btn) return;
 
-let timeout = null;
-bookSearch.addEventListener("input", () => {
-  clearTimeout(timeout);
+    const bookData = {
+      title: btn.dataset.title,
+      author: btn.dataset.author,
+      pages: btn.dataset.pages,
+      image: btn.dataset.image,
+    };
 
-  timeout = setTimeout(() => {
-    let query = bookSearch.value.trim();
-    if (query.length > 3) {
-      fetchBooks(query);
-    } else {
-      console.log("empty");
+    localStorage.setItem("selectedBook", JSON.stringify(bookData));
+
+    const modal1 = bootstrap.Modal.getInstance(
+      document.getElementById("exampleModalToggle")
+    );
+    if (modal1) modal1.hide();
+
+    const modal2 = new bootstrap.Modal(
+      document.getElementById("exampleModalToggle2")
+    );
+    modal2.show();
+  });
+  document.addEventListener("pointerdown", (e) => {
+    const clickedInside =
+      e.target === bookSearch ||
+      e.target.closest(".results-list") ||
+      e.target.closest("#exampleModalToggle");
+
+    if (!clickedInside) {
+      resultsList.style.display = "none";
     }
-  }, 500);
-});
-
-bookSearch.addEventListener("focus", () => {
-  resultsList.style.display = "block";
-});
-document.querySelector(".results-list").addEventListener("click", (e) => {
-  const btn = e.target.closest("button.list-item");
-  console.log(btn);
-  if (!btn) return;
-
-  const bookData = {
-    title: btn.dataset.title,
-    author: btn.dataset.author,
-    pages: btn.dataset.pages,
-    image: btn.dataset.image,
-  };
-
-  localStorage.setItem("selectedBook", JSON.stringify(bookData));
-
-  const modal1 = bootstrap.Modal.getInstance(
-    document.getElementById("exampleModalToggle")
-  );
-  if (modal1) modal1.hide();
-
-  const modal2 = new bootstrap.Modal(
-    document.getElementById("exampleModalToggle2")
-  );
-  modal2.show();
-});
-document.addEventListener("pointerdown", (e) => {
-  const clickedInside =
-    e.target === bookSearch ||
-    e.target.closest(".results-list") ||
-    e.target.closest("#exampleModalToggle");
-
-  if (!clickedInside) {
-    resultsList.style.display = "none";
-  }
-});
-
+  });
+}
 async function fetchBooks(query) {
   try {
     const data = await fetch(
@@ -185,19 +278,19 @@ async function fetchBooks(query) {
     console.log(err);
   }
 }
+if (modal2)
+  modal2.addEventListener("show.bs.modal", function () {
+    const saved = localStorage.getItem("selectedBook");
+    if (!saved) return;
 
-modal2.addEventListener("show.bs.modal", function () {
-  const saved = localStorage.getItem("selectedBook");
-  if (!saved) return;
+    const book = JSON.parse(saved);
+    const inputs = modal2.querySelectorAll("input.form-control");
 
-  const book = JSON.parse(saved);
-  const inputs = modal2.querySelectorAll("input.form-control");
-
-  inputs[0].value = book.title || "";
-  inputs[1].value = book.author || "";
-  inputs[2].value = book.pages || "";
-  inputs[3].value = book.image || "";
-});
+    inputs[0].value = book.title || "";
+    inputs[1].value = book.author || "";
+    inputs[2].value = book.pages || "";
+    inputs[3].value = book.image || "";
+  });
 
 statusBtns.forEach((element) => {
   element.addEventListener("click", function (event) {
@@ -206,10 +299,11 @@ statusBtns.forEach((element) => {
     window.location.href = url;
   });
 });
-searchForm.addEventListener("submit", function (event) {
-  event.preventDefault();
-  let searchInput = document.getElementById("search-input");
-  const url = new URL(window.location.href);
-  url.searchParams.set("title", searchInput.value);
-  window.location.href = url;
-});
+if (searchForm)
+  searchForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    let searchInput = document.getElementById("search-input");
+    const url = new URL(window.location.href);
+    url.searchParams.set("title", searchInput.value);
+    window.location.href = url;
+  });

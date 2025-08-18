@@ -33,7 +33,7 @@
 
     <title>Dashboard</title>
   </head>
-  <body class="mx-auto" style="font-family: 'Inter'">
+  <body class="d-flex flex-column mx-auto vh-100" style="font-family: 'Inter'">
     <header class="p-2 shadow-sm">
       <div class="container d-flex justify-content-between">
         <p style="font: bold 20px 'Playfair Display'">BookNest</p>
@@ -47,7 +47,7 @@
         </div>
       </div>
     </header>
-    <main class="container">
+    <main class="flex-grow-1 container">
       <div class="p-5">
         <form id="search-form">
           <input
@@ -192,17 +192,22 @@
                 class="form-control mb-1"
                 placeholder="Title"
                 name="title"
+                required
               />
               <input
                 class="form-control mb-1"
                 placeholder="Author"
                 name="author"
+                type="text"
+                required
               />
               <input
                 class="form-control mb-1"
                 placeholder="Pages"
                 type="number"
                 name="pages"
+                min="1"
+                required
               />
               <input
                 class="form-control mb-1"

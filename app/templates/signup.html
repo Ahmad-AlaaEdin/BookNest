@@ -25,13 +25,13 @@
       integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
       crossorigin="anonymous"
     ></script>
-
+    <link rel="stylesheet" src="/static/css/style.css" />
     <title>BookNest</title>
   </head>
   <body
     class="container vh-100 d-flex align-items-center justify-content-center"
   >
-    <main class="w-100 w-md-50 border border-2 p-2 p-md-5 rounded-4">
+    <main class="w-md-50 border border-2 p-2 p-md-5 rounded-4">
       <h1
         style="font: bold 20px 'Playfair Display'"
         class="border-bottom text-center p-2"
@@ -48,6 +48,7 @@
             placeholder="Name"
             name="name"
             id="name"
+            required
           />
           <label class="form-label" for="email">Email</label>
           <input
@@ -56,6 +57,7 @@
             placeholder="Email"
             name="email"
             id="email"
+            required
           />
           <label class="form-label" for="email">Password</label>
           <input
@@ -63,6 +65,7 @@
             type="password"
             name="password"
             placeholder="Password"
+            required
           />
 
           <button class="btn btn-primary" type="submit">Signup</button>
