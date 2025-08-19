@@ -160,7 +160,7 @@ if (noteForm)
 
     const input = document.getElementById("note-input");
     const noteContent = input.value.trim();
-    if (!noteContent) return;
+    if (!noteContent) return alert("Content Required");
 
     try {
       const response = await fetch(this.action, {
@@ -175,19 +175,18 @@ if (noteForm)
 
       const data = await response.json();
       let notesList = document.getElementById("notes-list");
-      
-      // If notes list doesn't exist, create it (happens when no notes exist initially)
+
       if (!notesList) {
         const notesSection = document.querySelector(".card.shadow-sm.p-4");
         const noNotesText = notesSection.querySelector("p.text-muted");
         if (noNotesText) noNotesText.remove();
-        
+
         notesList = document.createElement("ul");
         notesList.className = "list-group list-group-flush mb-3";
         notesList.id = "notes-list";
         notesSection.appendChild(notesList);
       }
-      
+
       const li = document.createElement("li");
       li.className =
         "list-group-item d-flex justify-content-between align-items-start";

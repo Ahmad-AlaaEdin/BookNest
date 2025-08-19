@@ -105,7 +105,7 @@
       </div>
       <section class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4">
         {% if books%} {% for book in books %}
-        <div class="col shadow">
+        <div class="col book">
           <a href="/books/{{ book.id }}">
             <img
               src="{{ book.image }}"

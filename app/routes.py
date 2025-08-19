@@ -63,7 +63,7 @@ def update_password():
 @main.route("/user", methods=["PATCH"])
 @login_required
 def update_name():
-    name = request.form.get("name", "")
+    name = request.form.get("name", "").strip()
 
     if not name:
         return jsonify(message="Please provide Name"), 400
@@ -121,10 +121,10 @@ def profile():
 @login_required
 def add_book():
 
-    title = request.form.get("title")
-    author = request.form.get("author")
-    pages = request.form.get("pages")
-    status = request.form.get("status")
+    title = request.form.get("title").strip()
+    author = request.form.get("author").strip()
+    pages = request.form.get("pages").strip()
+    status = request.form.get("status").strip()
     image = request.form.get("image", "/static/images/default.png")
     if not title or not author or not pages or not status:
         return jsonify(message="All Fields Required"), 400
@@ -164,7 +164,7 @@ def add_note(book_id):
     data = request.get_json()
     content = data.get("content") if data else None
 
-    if not content:
+    if not content.strip():
         return jsonify(message="Content Required"), 400
 
     new_note = Note(
@@ -203,12 +203,15 @@ def delete_note(note_id):
 @login_required
 def update_note(note_id):
     data = request.get_json()
+    new_content = data.get("content").strip()
+    if not new_content:
+        return jsonify(message="Content Required"), 400
 
     note = db.session.get(Note, note_id)
     if not note or note.book.user_id != current_user.id:
         return jsonify(message="Note Not Found"), 404
 
-    note.content = data.get("content", note.content)
+    note.content = new_content
     db.session.commit()
 
     return (
@@ -266,15 +269,11 @@ def get_all_books():
 @login_required
 def update_book(book_id):
 
-    title = request.form.get("title")
-    author = request.form.get("author")
-    pages = request.form.get("pages")
-    status = request.form.get("status")
-
-    if not book_id:
-        flash("Book Id Required")
-        return redirect("/dashboard")
-
+    title = request.form.get("title").strip()
+    author = request.form.get("author").strip()
+    pages = request.form.get("pages").strip()
+    status = request.form.get("status").strip()
+    image = request.form.get("image").strip()
     book = db.session.get(Book, book_id)
     if not book or book.user_id != current_user.id:
 
@@ -296,6 +295,8 @@ def update_book(book_id):
 
     if status:
         book.status = status
+    if image:
+        book.image = image
 
     db.session.commit()
     return jsonify(message="Book updated successfully!"), 200

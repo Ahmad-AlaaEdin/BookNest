@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_login import LoginManager
 from .utils import User_File_Handler
 from .config import SECRET_KEY, DB_CON
@@ -25,6 +25,18 @@ def create_app():
     login_manager = LoginManager()
     login_manager.init_app(app)
 
+    @login_manager.unauthorized_handler
+    def unauthorized_callback():
+        return (
+            render_template(
+                "error.html",
+                code=401,
+                title="Unauthorized",
+                message="You must log in to access this page.",
+            ),
+            401,
+        )
+
     @login_manager.user_loader
     def load_user(user_id):
         user = handler.get(user_id)
@@ -37,5 +49,16 @@ def create_app():
 
     app.register_blueprint(main)
     app.register_blueprint(auth)
+
+    @app.errorhandler(404)
+    def not_found(error):
+        return (
+            render_template(
+                "error.html",
+                code=404,
+                title="Not Found",
+            ),
+            404,
+        )
 
     return app

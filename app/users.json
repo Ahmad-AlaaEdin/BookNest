@@ -22,5 +22,11 @@
         "name": "\u0623\u062d\u0645\u062f",
         "email": "a@asu.com",
         "password_hash": "scrypt:32768:8:1$Ji9Dp5eUh7nkpT8j$a0d350915365bc12941298f3e2d34a5f0a622425694b9e95f9f864528d18924301a268f2f46f40b13bba679ae27e34271d59a4a7dbb858e69ee9099262539940"
+    },
+    {
+        "id": "da183fde-78fb-4309-aee1-3d0a2e5d5f4d",
+        "name": " ",
+        "email": "waleed@gmail.com",
+        "password_hash": "scrypt:32768:8:1$G5MTjTYKKQMNX2Yt$510c4028e3ee2acffdf1c304935d355c6a22b87b75376f05570c4a79ac69f2c9cc8c5f1653b37e69fdaa149601fb4f3f49085c05dc621fce1e123cf385833c49"
     }
 ]
