@@ -44,11 +44,17 @@ def create_app():
             return user
         return None
 
-    from .routes import main
-    from .auth import auth
+    from .routes.users import users
+    from .routes.auth import auth
+    from .routes.books import books
+    from .routes.notes import notes
+    from .routes.views import views
 
-    app.register_blueprint(main)
+    app.register_blueprint(users)
     app.register_blueprint(auth)
+    app.register_blueprint(books)
+    app.register_blueprint(notes)
+    app.register_blueprint(views)
 
     @app.errorhandler(404)
     def not_found(error):

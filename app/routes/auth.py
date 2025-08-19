@@ -1,7 +1,7 @@
 from flask import Blueprint, request, flash, redirect
-from .models.user import User
+from ..models.user import User
 
-from .utils import User_File_Handler
+from ..utils import User_File_Handler
 
 from flask_login import login_user, logout_user
 
