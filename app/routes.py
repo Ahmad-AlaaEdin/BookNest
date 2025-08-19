@@ -154,7 +154,7 @@ def get_book(book_id):
     if not book:
         abort(404, description="Book not found")
 
-    print(book.notes)
+
     return render_template("book.html", book=book)
 
 

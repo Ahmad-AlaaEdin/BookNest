@@ -20,7 +20,7 @@ if (nameForm)
     event.preventDefault();
 
     const formData = new FormData(nameForm);
-    console.log(formData);
+
     const response = await fetch(`/user`, {
       method: "PATCH",
       body: formData,
@@ -44,7 +44,7 @@ if (passwordForm)
     event.preventDefault();
 
     const formData = new FormData(passwordForm);
-    console.log(formData);
+
     const response = await fetch(`/password`, {
       method: "PATCH",
       body: formData,
@@ -120,7 +120,6 @@ if (deleteBookBtn)
         alert(parsedRes.message);
       }
     } catch (err) {
-      console.error(err);
       alert("Error deleting the book.");
     }
   });
@@ -135,7 +134,7 @@ document.addEventListener("click", async function (e) {
       const response = await fetch(`/notes/${noteId}`, {
         method: "DELETE",
       });
-      console.log(response);
+
       if (!response.ok) throw new Error("Request failed");
 
       const noteItem = e.target.closest("li");
@@ -143,14 +142,12 @@ document.addEventListener("click", async function (e) {
         noteItem.remove();
       }
     } catch (err) {
-      console.error(err);
       alert("Could not delete note. Try again.");
     }
   }
 
   if (e.target.classList.contains("note-delete-btn")) {
     const noteId = e.target.dataset.noteId;
-    console.log("Delete note:", noteId);
   }
 });
 
@@ -170,7 +167,7 @@ if (noteForm)
         },
         body: JSON.stringify({ content: noteContent }),
       });
-      console.log(response);
+
       if (!response.ok) throw new Error("Request failed");
 
       const data = await response.json();
@@ -203,7 +200,6 @@ if (noteForm)
 
       input.value = "";
     } catch (err) {
-      console.error(err);
       alert("Could not add note. Try again.");
     }
   });
@@ -212,7 +208,7 @@ if (addBookForm)
   addBookForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const data = new FormData(addBookForm);
-    console.log(data);
+
     const response = await fetch("/books", {
       method: "POST",
       body: data,
@@ -230,12 +226,12 @@ if (updateBookForm)
     event.preventDefault();
     const data = new FormData(updateBookForm);
     const bookID = data.get("book_id");
-    console.log(data);
+
     const response = await fetch(`/books/${bookID}`, {
       method: "PUT",
       body: data,
     });
-    console.log(response);
+
     const parsedRes = await response.json();
     if (response.ok) {
       location.reload(true);
@@ -252,8 +248,6 @@ if (bookSearch) {
       let query = bookSearch.value.trim();
       if (query.length > 3) {
         fetchBooks(query);
-      } else {
-        console.log("empty");
       }
     }, 500);
   });
@@ -263,7 +257,7 @@ if (bookSearch) {
   });
   document.querySelector(".results-list").addEventListener("click", (e) => {
     const btn = e.target.closest("button.list-item");
-    console.log(btn);
+
     if (!btn) return;
 
     const bookData = {
@@ -330,7 +324,7 @@ async function fetchBooks(query) {
       })
       .join("");
   } catch (err) {
-    console.log(err);
+    alert(arr);
   }
 }
 if (modal2)
