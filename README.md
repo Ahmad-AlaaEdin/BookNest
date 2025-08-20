@@ -2,7 +2,7 @@
 
 BookNest is a web application that helps users **track their reading journey**, manage personal libraries, and save **notes or favorite quotes** for each book.
 
-It allows users to **sign up, log in, add books, update details, delete books, and attach personal notes/quotes**. The app provides a clean dashboard with filters, search functionality, and reading statistics.
+It allows users to **sign up, log in, add books, update details, delete books, and attach personal notes/quotes**. The app provides a clean dashboard with filters, search functionality.
 
 ---
 
@@ -12,11 +12,8 @@ It allows users to **sign up, log in, add books, update details, delete books, a
 - 📖 **Book Management**: Add, update, and delete books with cover image, author, and details.
 - 📝 **Notes & Quotes**: Add, update, and delete notes or favorite quotes for each book.
 - 🔍 **Search & Filters**: Easily find books in your library.
-- 📊 **Stats Dashboard**: Displays reading progress and user insights.
-- 💾 **JSON Integration**: Uses a JSON file for saving extra data (e.g., motivational quotes, app settings, or recommendations).
 
-**✨ New Feature:**  
-Unlike simple book trackers, BookNest lets users **attach personal notes/quotes to each book** and also integrates a **JSON-powered feature** (such as random daily quotes) for extra interactivity.
+
 
 ---
 
@@ -53,7 +50,15 @@ Make sure you have the following installed:
 pip install -r requirements.txt
 ```
 
-3. Run the application:
+3. Add Env Variables:
+
+```bash
+.env
+FLASK_SECRET_KEY=
+DB_CON = sqlite:///
+```
+
+4. Run the application:
 
 ```bash
 python3 main.py
@@ -65,7 +70,7 @@ python3 main.py
 - [x] It uses the Flask web framework.
 - [x] It uses at least one module from the Python Standard Library other than the random module.
       Please provide the name of the module you are using in your app.
-  - Module name:
+  - Module name:`os`
 - [x] It contains at least one class written by you that has both properties and methods. It uses `__init__()` to let the class initialize the object's attributes (note that `__init__()` doesn't count as a method). This includes instantiating the class and using the methods in your app.
       Please provide below the file name and the line number(s) of at least one example of a class definition in your code as well as the names of two properties and two methods.
   - File name for the class definition: `models/user.py`
@@ -77,6 +82,30 @@ python3 main.py
 - [x] It uses modern JavaScript (for example, let and const rather than var).
 - [x] It makes use of the reading and writing to the same file feature.
 - [x] It contains conditional statements. Please provide below the file name and the line number(s) of at least:
+      one example of a conditional statement in your code.
+  - File name:`routers/auth.py`
+  - Line number(s):17
+- [x] It contains loops. Please provide below the file name
+      and the line number(s) of at least
+      one example of a loop in your code.
+- File name:`utils.py`
+- Line number(s):53
+- [x] It lets the user enter a value in a text box at some
+      point.
+      This value is received and processed by your back end
+      Python code.
+- [x] It doesn't generate any error message even if the user
+      enters a wrong input.
+- [x] It is styled using your own CSS.
+- [x] The code follows the code and style conventions as
+      introduced in the course, is fully documented using comments
+      and doesn't contain unused or experimental code.
+      In particular, the code should not use `print()` or
+      `console.log()` for any information the app user should see.
+      Instead, all user feedback needs to be visible in the
+      browser.
+- [x] All exercises have been completed as per the
+      requirements and pushed to the respective GitHub repository.
 
 ```
 
