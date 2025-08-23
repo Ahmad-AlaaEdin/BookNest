@@ -26,18 +26,18 @@
     <link rel="stylesheet" href="/static/css/style.css" />
     <title>{% block title%} {%endblock%}</title>
   </head>
-  <body class="mx-auto" style="font-family: 'Inter'">
+  <body class="mx-auto d-flex flex-column min-vh-100" style="font-family: 'Inter'">
     <header class="p-2 shadow-sm">
       <div class="container d-flex justify-content-between align-items-center">
-        <p style="font: bold 20px 'Playfair Display'">BookNest</p>
+        <a href="/" class="text-decoration-none text-dark">
+          <p style="font: bold 20px 'Playfair Display'" class="m-0">BookNest</p>
+        </a>
         <div class="d-flex align-items-center">
           {% if current_user.is_authenticated %}
-          <a
-            href="/profile"
-            class="fw-bold me-3 text-decoration-none text-dark"
-          >
-            👤 {{ current_user.name }}
-          </a>
+          <nav class="me-3">
+            <a href="/dashboard" class="text-decoration-none text-dark me-3 fw-bold">📚 Dashboard</a>
+            <a href="/profile" class="text-decoration-none text-dark me-3 fw-bold">👤 {{ current_user.name }}</a>
+          </nav>
           <a href="/logout" class="btn btn-outline-danger btn-sm fw-bold">Logout</a>
           {% else %}
           <a class="btn btn-primary fw-bold mx-1" href="/login">Login</a>
